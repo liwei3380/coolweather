@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,13 +29,21 @@ public class Utility {
 	public static void handleWeatherResponse(Context context,String response){
 		try {
 			JSONObject jsonObject = new JSONObject(response);
-			JSONObject weatherInfo = jsonObject.getJSONObject("weatherinfo");
-			String cityName = weatherInfo.getString("city");
+			//JSONObject weatherInfo = jsonObject.getJSONObject("weatherinfo");
+			JSONObject weatherInfo = jsonObject.getJSONObject("data");
+			JSONArray WeatherArray = weatherInfo.getJSONArray("forecast");
+			/*String cityName = weatherInfo.getString("city");
 			String weatherCode = weatherInfo.getString("cityid");
 			String temp1 = weatherInfo.getString("temp1");
 			String temp2 = weatherInfo.getString("temp2");
 			String weatherDesp = weatherInfo.getString("weather");
-			String publishTime = weatherInfo.getString("ptime");
+			String publishTime = weatherInfo.getString("ptime");*/
+			String cityName = weatherInfo.getString("city");
+			String weatherCode = weatherInfo.getString("wendu");
+			String publishTime = weatherInfo.getString("ganmao");
+			String temp1 = WeatherArray.getJSONObject(0).getString("low");
+			String temp2 = WeatherArray.getJSONObject(0).getString("high");
+			String weatherDesp = WeatherArray.getJSONObject(0).getString("type");
 			saveWeatherInfo(context, cityName, weatherCode, temp1, temp2, weatherDesp, publishTime);
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -51,15 +60,18 @@ public class Utility {
 	 * @param weatherDesp
 	 * @param publishTime
 	 */
-	public static void saveWeatherInfo(Context context, String cityName, String weaterCode, String temp1, String temp2, String weatherDesp, String publishTime){
+	public static void saveWeatherInfo(Context context, String cityName, String weatherCode, String temp1, String temp2, String weatherDesp, String publishTime){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyƒÍM‘¬d»’",Locale.CHINA);
 		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
 		editor.putBoolean("city_selected", true);
 		editor.putString("city_name", cityName);
-		editor.putString("weather_code", weaterCode);
+		//editor.putString("wendu", wendu);
+		//editor.putString("ganmao", ganmao);
+		//editor.putString("aqi", aqi);
 		editor.putString("temp1", temp1);
 		editor.putString("temp2", temp2);
 		editor.putString("weather_desp", weatherDesp);
+		editor.putString("weather_code", weatherCode);
 		editor.putString("publish_time", publishTime);
 		editor.putString("current_date", sdf.format(new Date()));
 		editor.commit();
