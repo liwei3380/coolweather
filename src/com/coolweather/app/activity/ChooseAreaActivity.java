@@ -29,6 +29,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class ChooseAreaActivity extends Activity {
+	// clone
 	public static final int LEVEL_PROVINCE = 0;
 	public static final int LEVEL_CITY = 1;
 	public static final int LEVEL_COUNTY = 2;
